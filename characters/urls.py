@@ -9,6 +9,11 @@ urlpatterns = [
         views.get_random_character_view,
         name="random-character"
     ),
+    path(
+        "characters/",
+        views.CharacterListView.as_view(),
+        name="characters"
+    ),
 ]
 
 app_name = "characters"
