@@ -1,13 +1,12 @@
 from django.db.utils import IntegrityError
 import requests
 from django.conf import settings
-import pdb
 from characters.models import Character
 
 
 def scrape_characters() -> list[Character]:
     next_url_to_scrape = settings.RICK_AND_MORTY_API_CHARACTERS_URL
-    
+
     characters = []
     while next_url_to_scrape is not None:
         characters_response = requests.get(next_url_to_scrape).json()
@@ -19,7 +18,7 @@ def scrape_characters() -> list[Character]:
                     status=character_dict["status"],
                     species=character_dict["species"],
                     gender=character_dict["gender"],
-                    image=character_dict["image"]
+                    image=character_dict["image"],
                 )
             )
 
@@ -30,12 +29,18 @@ def scrape_characters() -> list[Character]:
 def save_characters(characters: list[Character]) -> None:
     for character in characters:
         try:
-            character.save()
-        except IntegrityError:
-            print(
-                f"Character with `api_id`: {character.api_id} "
-                f"already exists in DB"
+            Character.objects.update_or_create(
+                api_id=character.api_id,
+                defaults={
+                    "name": character.name,
+                    "status": character.status,
+                    "species": character.species,
+                    "gender": character.gender,
+                    "image": character.image,
+                },
             )
+        except IntegrityError as e:
+            print(f"Error saving character {character.api_id}: {e}")
 
 
 def sync_characters_with_api() -> None:
