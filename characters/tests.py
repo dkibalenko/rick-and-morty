@@ -10,22 +10,22 @@ from characters.serializers import CharacterSerializer
 class CharactersViewTests(TestCase):
     def setUp(self):
         self.character1 = Character.objects.create(
-                        api_id=1,
-                        name="Rick Sanchez",
-                        status="Alive",
-                        species="Human",
-                        gender="Male",
-                        image="test1.jpg"
-                    )
+            api_id=1,
+            name="Rick Sanchez",
+            status="Alive",
+            species="Human",
+            gender="Male",
+            image="test1.jpg",
+        )
         self.character2 = Character.objects.create(
-                        api_id=2,
-                        name="Morty Smith",
-                        status="Alive",
-                        species="Human",
-                        gender="Male",
-                        image="test2.jpg"
-                    )
-    
+            api_id=2,
+            name="Morty Smith",
+            status="Alive",
+            species="Human",
+            gender="Male",
+            image="test2.jpg",
+        )
+
     def test_get_characters_list_queryset(self):
         res = self.client.get(reverse("characters:characters"))
         characters = Character.objects.all()
@@ -44,10 +44,7 @@ class CharactersViewTests(TestCase):
         self.assertEqual(res.data["results"], serializer.data)
 
     def test_get_random_character_function(self):
-        with patch(
-            "characters.views.choice",
-            return_value=5
-        ):
+        with patch("characters.views.choice", return_value=5):
             result = get_random_character()
             assert result == self.character1
 

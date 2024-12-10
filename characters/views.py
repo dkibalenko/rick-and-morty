@@ -12,9 +12,10 @@ from pagination import CharactersListPagination
 
 
 def get_random_character() -> Character:
-    pks = Character.objects.values_list('pk', flat=True)
+    pks = Character.objects.values_list("pk", flat=True)
     random_pk = choice(pks)
     return Character.objects.get(pk=random_pk)
+
 
 @extend_schema(responses={status.HTTP_200_OK: CharacterSerializer})
 @api_view(["GET"])
@@ -33,18 +34,18 @@ class CharacterListView(generics.ListAPIView):
 
     def get_queryset(self) -> QuerySet:
         queryset = Character.objects.all()
-        name = self.request.query_params.get('name')
+        name = self.request.query_params.get("name")
         if name is not None:
             queryset = queryset.filter(name__icontains=name)
         return queryset
-    
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name='name',
+                name="name",
                 type=str,
-                description='Filter by name insensitive contains',
-                required=False
+                description="Filter by name insensitive contains",
+                required=False,
             )
         ]
     )
